@@ -1,0 +1,21 @@
+// add custom tab
+
+add_filter( 'woocommerce_product_tabs', 'new_product_tab' );
+
+function new_product_tab( $tabs ) {
+	/* Adds the new tab */
+	$tabs['test_tab'] = array(
+		'title' 	=> __( 'New Custom Product Tab', 'woocommerce' ),
+		'priority' 	=> 50,  
+		'callback' 	=> 'new_product_tab_content'
+	);
+	return $tabs;  /* Return all  tabs including the new New Custom Product Tab  to display */
+}
+
+function new_product_tab_content() {
+	/* The new tab content */
+	 echo 'New Product Tab';
+	 echo '
+
+Here\'s your new product tab.'; /* Here you can use the function to display meta boxes, advance custom fields etc.*/
+}
