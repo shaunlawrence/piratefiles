@@ -1,0 +1,80 @@
+// CHANGE THE ARCHIVE TEMPLATE
+
+/**
+ * Remove breadcrumbs
+ */
+remove_action('woocommerce_before_main_content', 'woocommerce_breadcrumb', 20);
+remove_action('woocommerce_before_shop_loop', 'woocommerce_result_count', 20);
+remove_action('woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30);
+
+
+/**
+ * Add breadcrumbs earlier on
+ *
+ * We know the content wrapper is added at priority 10, so
+ * let's add the breadcrumbs before that, at priority 5
+ */
+add_action('woocommerce_before_main_content', 'woocommerce_breadcrumb', 5);
+add_action('woocommerce_before_main_content', 'woocommerce_result_count', 6);
+add_action('woocommerce_before_main_content', 'woocommerce_catalog_ordering', 7);
+
+/**
+ * Opening div for our content wrapper
+ */
+add_action('woocommerce_before_main_content', 'pirate_open_div', 4);
+ 
+function pirate_open_div() {
+    echo '<div class="container">';
+}
+ 
+/**
+ * Closing div for our content wrapper
+ */
+add_action('woocommerce_before_main_content', 'pirate_close_div', 9);
+ 
+function pirate_close_div() {
+    echo '</div>';
+}
+
+
+
+//REMOVE REVIEWS
+add_filter( 'woocommerce_product_tabs', 'custom_woo_remove_reviews_tab', 98);
+function custom_woo_remove_reviews_tab($tabs) {
+
+unset($tabs['reviews']);
+
+return $tabs;
+}
+
+//CHANGE RELATED PRODUCTS TEXT
+function my_text_strings( $translated_text, $text, $domain ) {
+	switch ( $translated_text ) {
+		case 'Related Products' :
+			$translated_text = __( 'You may also like...', 'woocommerce' );
+			break;
+	}
+	return $translated_text;
+}
+add_filter( 'gettext', 'my_text_strings', 20, 3 );
+
+
+// CHANGE BREADCRUMB DELIMITER
+add_filter( 'woocommerce_breadcrumb_defaults', 'jk_change_breadcrumb_delimiter' );
+function jk_change_breadcrumb_delimiter( $defaults ) {
+	// Change the breadcrumb delimeter from '/' to '>'
+	$defaults['delimiter'] = ' &gt; ';
+	return $defaults;
+}
+
+
+// NO INDEX ATTACHMENT PAGES
+
+function attachmentpages_noindex() {
+if(is_attachment()) {
+
+echo '<meta name="robots" content="noindex" />';
+
+}
+}
+add_action('wp_head', 'attachmentpages_noindex');
